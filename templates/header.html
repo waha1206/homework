@@ -1,0 +1,30 @@
+<!-- header.html (ch07www object) -->
+  <nav class='navbar navbar-default'>
+    <div class='container-fluid'>
+      <div class='navbar-header'>
+        <div class='nav-brand' align=center>
+          LEO的測試環境 <br/>
+          {% if messages %}
+          登入中
+          {% endif %}
+        </div>
+      </div>
+      <ul class='nav navbar-nav'>
+        <li class='active'><a href='/'>Home</a></li>
+        {% if username %}
+          <li><a href='/logout'>登出</a><li>
+          <li><a href='/list'>瀏覽訊息</a><li>
+          <li><a href='/post'>張貼訊息</a><li>
+          <li><a href='/post2db'>POST2DB</a><li>
+          <li><a href='/contact'>聯絡管理員</a><li>
+          <li><a href='/userinfo'>個人資料</a><li>
+          <li><a href='/diarypost'>日記</a><li>
+        {% else %}
+          <li><a href='/login'>登入</a><li>
+          <li><a href='/accounts/register'>註冊</a><li>
+          <li><a href='/contact'>聯絡管理員</a><li>
+        {% endif %}
+        <li><a href='/admin'>後臺管理</a><li>
+      </ul>
+    </div>
+  </nav>
