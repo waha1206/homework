@@ -27,7 +27,7 @@ DEBUG = True
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 
-ALLOWED_HOSTS = ['192.168.142.137']
+ALLOWED_HOSTS = ['192.168.142.138']
 
 
 # Application definition

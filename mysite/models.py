@@ -82,3 +82,47 @@ class Diary(models.Model):
     
     def __str__(self):
         return "{}({})".format(self.ddate, self.user)
+        
+#下面為大分類的model
+class CategoryLevelOne(models.Model):
+    name = models.CharField(max_length=10, verbose_name='分類')
+    title = models.CharField(max_length=10, verbose_name='中文名稱')
+    description = models.TextField()    
+    def __str__(self):
+        return self.name
+    class Meta:#plural 使用複數名，才不會多一個s在尾巴
+        verbose_name_plural = u'建立第一層分類名稱'
+        unique_together = ('name',)
+
+class CategoryLevelTwo(models.Model):
+    name        = models.CharField(max_length=10, verbose_name='分類')
+    title       = models.CharField(max_length=10, verbose_name='中文名稱')
+    category    = models.ForeignKey(CategoryLevelOne, on_delete=models.CASCADE)
+    description = models.TextField()
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name_plural = u'建立第二層分類名稱'
+        unique_together = ('name',)
+        
+class CategoryLevelThree(models.Model):
+    name        = models.CharField(max_length=10, verbose_name='分類')
+    title       = models.CharField(max_length=10, verbose_name='中文名稱')
+    category    = models.ForeignKey(CategoryLevelTwo, on_delete=models.CASCADE)
+    description = models.TextField()
+    class Meta:
+        verbose_name_plural = u'建立第三層分類名稱'
+        unique_together = ('name',)
+    
+class Profit(models.Model):
+    container = models.OneToOneField(CategoryLevelTwo, on_delete=models.CASCADE, db_index=True)
+    key       = models.CharField(max_length=10, db_index=True, verbose_name='數量')
+    value     = models.CharField(max_length=10, db_index=True, verbose_name='利率')
+    class Meta:
+        verbose_name_plural = '利潤分配表'
+    
+    def getprofit(num):
+        if num in profit:
+            return profit[num]
+        else:
+            return
