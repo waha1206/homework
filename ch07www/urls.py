@@ -16,9 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from mysite import views
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('filer/', include('filer.urls')),
     path('', views.index),
     path('detail/<int:id>', views.detail, name = 'detail-url'),
     path('<int:pid>/<str:del_pass>', views.index),
@@ -33,3 +37,6 @@ urlpatterns = [
     path('diarypost/', views.diarypost),
     path('accounts/', include('registration.backends.default.urls')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEIDA_ROOT)
+

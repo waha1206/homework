@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from filer.fields.image import FilerImageField
 
 # Create your models here.
 class Maker(models.Model):
@@ -98,6 +99,7 @@ class CategoryLevelTwo(models.Model):
     name        = models.CharField(max_length=10, verbose_name='分類')
     title       = models.CharField(max_length=10, verbose_name='中文名稱')
     category    = models.ForeignKey(CategoryLevelOne, on_delete=models.CASCADE)
+    image       = FilerImageField(related_name='product_image', on_delete=models.CASCADE)
     description = models.TextField()
     def __str__(self):
         return self.name

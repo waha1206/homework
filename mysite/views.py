@@ -22,8 +22,8 @@ def index(request, pid=None, del_pass=None):
     years = range(1960, 2021)
     posts = models.Post.objects.filter(enabled=True).order_by('-pub_time')[:30]
     moods = models.Mood.objects.all()
-    p = models.CategoryLevelThree.objects.filter(name='JJ001-0001')
-    print(p[0].profit['50'])
+    #p = models.CategoryLevelThree.objects.filter(name='JJ001-0001')
+    #print(p[0].profit['50'])
     
     #是否有支援cookieS
     if request.session.test_cookie_worked():
