@@ -20,7 +20,7 @@ class ContactForm(forms.Form):
     
 #8.3模型表單類別ModelForm的應用
 class PostForm(forms.ModelForm):
-    captcha = CaptchaField()
+    captcha = CaptchaField() #機器人驗證所需要導入的
     class Meta:
 
         model = models.Post
@@ -71,4 +71,26 @@ class ProfileForm(forms.ModelForm):
         self.fields['height'].label = '身高 (cm)'
         self.fields['male'].label = '是男生嗎？'
         self.fields['website'].label = '個人網站'
+
+#把第二層資JJ001透過FORM去做修改利潤的表單
+class CategoryLevelTwoForm(forms.ModelForm):
+    class Meta:
+        model = models.CategoryLevelTwo
+        fields = ['name', 'title', 'category', 'image', 'description']
+    def __init__(self, *args, **kwargs):
+        super(CategoryLevelTwoForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = '分類'
+        self.fields['title'].label = '中文名稱'
+        self.fields['category'].label = '父類別'
+        self.fields['image'].label = '商品圖片'
+        self.fields['description'].label = '商品描述'
         
+class ProfitForm(forms.ModelForm):
+    class Meta:
+        model = models.Profit
+        fields = ['container', 'key', 'value']
+    def __init__(self, *args, **kwargs):
+        super(ProfitForm, self).__init__(*args, **kwargs)
+        self.fields['container'].label = '商品分類'
+        self.fields['key'].label = '請輸入數量'
+        self.fields['value'].label = '請輸入利潤'

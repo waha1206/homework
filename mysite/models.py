@@ -99,7 +99,7 @@ class CategoryLevelTwo(models.Model):
     name        = models.CharField(max_length=10, verbose_name='分類')
     title       = models.CharField(max_length=10, verbose_name='中文名稱')
     category    = models.ForeignKey(CategoryLevelOne, on_delete=models.CASCADE)
-    image       = FilerImageField(related_name='product_image', on_delete=models.CASCADE)
+    image       = FilerImageField(related_name='product_image', on_delete=models.CASCADE, null=True, verbose_name='圖片')
     description = models.TextField()
     def __str__(self):
         return self.name
@@ -117,14 +117,11 @@ class CategoryLevelThree(models.Model):
         unique_together = ('name',)
     
 class Profit(models.Model):
-    container = models.OneToOneField(CategoryLevelTwo, on_delete=models.CASCADE, db_index=True)
-    key       = models.CharField(max_length=10, db_index=True, verbose_name='數量')
-    value     = models.CharField(max_length=10, db_index=True, verbose_name='利率')
+    container = models.ForeignKey(CategoryLevelTwo, on_delete=models.CASCADE, db_index=True)
+    key       = models.IntegerField(db_index=True, verbose_name='數量')
+    value     = models.DecimalField(max_digits=3, decimal_places=2, db_index=True, verbose_name='利率')
     class Meta:
         verbose_name_plural = '利潤分配表'
-    
-    def getprofit(num):
-        if num in profit:
-            return profit[num]
-        else:
-            return
+        unique_together = ('key','container')#聯合約束此為一組的狀態JJ001只會有一個數量20的意思
+    def __str__(self):
+        return self.container

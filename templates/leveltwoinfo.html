@@ -1,0 +1,101 @@
+<!-- pos2db.html (ch08www object) -->
+{% extends "base.html" %}
+{% block title %}商品利潤總覽{% endblock %}
+{% block content %}
+
+<!-- 點擊BS4垃圾桶符號傳回刪除的程式碼 -->
+<script>
+function go_delete(del_key){
+    var product_name = document.getElementById('product_name').textContent;
+    
+<!-- confirm("視窗內之文字") -->
+
+    if (product_name != "") {
+        var usr = '/' + 'leveltwoinfo' + '/' + del_key + '/' + product_name;
+        window.location = usr;
+        
+    }
+}
+</script>
+
+
+<div class='container'>
+{% for message in messages %}
+  <div class='alert alert-{{message.tags}}'>{{ message }}</div>
+{% endfor %}
+
+<div class='container'>
+{% if message_post %}
+  <div class='alert alert-warinig'>{{ message_post }}</div>
+{% endif %}
+  <br>
+  
+<form name='category' action='.' method='POST'>{% csrf_token %}  
+  <select name = 'dropleveltwo' id='dropleveltwo'>
+  {% for org in products %}
+   <option name="{{org.id}}" // 要抓到jj002的話 option 要改成name 不能用option id (會抓到 1 2 3 ... 順序
+       {% if org == current_org %}selected="selected"{% endif %}>
+       {{org.name|capfirst}}
+   </option>
+  {% endfor %}
+  </select>
+  <input type='submit' value='查詢'>
+</form>
+
+  <label id='product_name'>
+{% if profit %}
+{{ get_products.name }}</label> - {{ get_products.title }}<br>
+<!-- <img src='{{ get_products.image.icons.64 }}'> <br> -->
+<img src='{{ get_products.image.url }}'> <br>
+{% for ig in all_image %}
+<img src='{{ ig.image.icons.64 }}'> <br>
+{% endfor %}
+<br>
+{% for i in profit %}
+{% if forloop.first %} 
+<table border="1" cellpadding="1" cellspacing="1" style="width:300px">
+        <tr>
+            <td style="text-align:center">數量</td>
+            <td style="text-align:center">毛利</td>
+            <td style="text-align:center">刪除</td>
+        </tr>
+{% endif %}
+        <tr>
+            <td style="text-align:center">{{ i.key }}</td>
+            <td style="text-align:center">{{ i.value }}</td>
+            <td style="text-align:center">
+            <span class="glyphicon glyphicon-trash" onclick='go_delete({{i.key}})'></span>
+        </tr>
+{% if forloop.last %}
+</table>
+{% endif %}
+{% empty %}
+<p><span style="font-size:14px"><span style="color:#ffff00"><span style="background-color:#c0392b">目前沒有任何數量與毛利的資訊，請盡速建立</span></span></span></p>
+
+{% endfor %}
+
+
+<form name='add_profit' action='.' method='POST'>{% csrf_token %}
+  <table>
+  {{ profit_form.as_table }}
+  </table>
+  <input type='submit' value='數量/利潤/新增'>
+</form>
+{% endif %}
+
+
+<!--
+<img src='{{ get_products.image.url }}'> 
+-->
+  
+<!-- FORM會使用到這樣的敘述
+<form name='my form' action='.' method='POST'>{% csrf_token %}
+  <table>
+  {{ post_form.as_table }}
+  </table>
+  <input type='submit' value='張貼'>
+  <input type='reset' value='清除重填'>
+</form>
+ --->
+</div>
+{% endblock %}

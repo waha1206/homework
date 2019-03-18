@@ -104,6 +104,41 @@ def index(request, pid=None, del_pass=None):
 
     return render(request, 'index.html', locals())
     
+def leveltwoinfo(request, del_key=None, del_product=None):
+    products = models.CategoryLevelTwo.objects.all()
+    profit_form = forms.ProfitForm()
+    
+    if del_key and del_product:
+        #依據商品的型號跟數量找到該筆資料後刪除
+        del_profit = models.Profit.objects.filter(container__name=del_product, key=del_key)#.values('key', 'value')
+        #刪除該筆數據，要注意queryset是無法被print出來的，要看就要後面加上.values('','')       ↑
+        del_profit.delete()
+        return HttpResponseRedirect("/leveltwoinfo/")
+
+    if request.method == 'POST':
+        profit_form = forms.ProfitForm(request.POST)
+        if profit_form.is_valid():
+            try:
+                profit_form.save()
+                print('正確地把資料存檔了')
+                print(profit_form)
+            except:
+                print('數量重複')
+        else:
+            print('表單沒有傳回數量與毛利率')
+        try:
+            list = request.POST.getlist('dropleveltwo') #select name = 'dropleveltwo'
+            #option name="{{org.id}} 這樣才會從select抓出JJ002的名字
+            get_products = models.CategoryLevelTwo.objects.get(name=list[0])
+            print(get_products.title)
+            profit = models.Profit.objects.filter(container__name=list[0]).values('key', 'value').order_by('key')
+            #print(profit)
+        except:
+            message = '資料出現異常'
+            print('找不到資料')
+    return render(request, 'leveltwoinfo.html', locals())
+
+    
 def detail(request, id):
     try:
         product = models.Product.objects.get(id=id)

@@ -36,6 +36,8 @@ urlpatterns = [
     path('userinfo/', views.userinfo),
     path('diarypost/', views.diarypost),
     path('accounts/', include('registration.backends.default.urls')),
+    path('leveltwoinfo/', views.leveltwoinfo),
+    path('leveltwoinfo/<int:del_key>/<str:del_product>', views.leveltwoinfo),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEIDA_ROOT)

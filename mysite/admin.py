@@ -27,7 +27,7 @@ class CategoryLevelOneAdmin(admin.ModelAdmin):
     
 #第二層的admin介面
 class CategoryLevelTwoAdmin(admin.ModelAdmin):
-    list_display = ('name', 'title', 'description')
+    list_display = ('name', 'title', 'description', 'image')
     search_fields=('name',)
     ordering = ('name',)
 #第三層的admin介面
