@@ -37,16 +37,106 @@ INSTALLED_APPS = [
     'registration',
     'django.contrib.auth',
     'django.contrib.admin',
+    'django_logging',
+    'rest_framework',
+    'rest_framework_docs',
+    'crispy_forms',
+    'django_tables2',
     'mysite',
     'captcha',
     'easy_thumbnails',
     'filer',
     'mptt',
+    'datatableview',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    # 'filters': {
+    #     'special': {
+    #         '()': 'project.logging.SpecialFilter',
+    #         'foo': 'bar',
+    #     },
+    #     'require_debug_true': {
+    #         '()': 'django.utils.log.RequireDebugTrue',
+    #     },
+    # },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            # 'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        # 'file': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.FileHandler',
+        #     'filename': 'mylog_test.log',
+        #     'formatter': 'verbose'
+        # },
+
+        # 'mail_admins': {
+        #     'level': 'ERROR',
+        #     'class': 'django.utils.log.AdminEmailHandler',
+        #     'filters': ['special']
+        # }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],  # console or file
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # For performance reasons, SQL logging is only enabled when settings.DEBUG is set to True
+        # ref. https://docs.djangoproject.com/en/1.11/topics/logging/#django-db-backends
+        'django.db.backends': {
+            'handlers': ['console'],
+            'propagate': False,
+            'level': 'DEBUG',
+        },
+        # 'api.views': {
+        #     'handlers': ['console'],
+        #     'propagate': False,
+        #     'level': 'DEBUG',
+        # },
+        # 'background_task': {
+        #     'handlers': ['console'],
+        #     'level': 'DEBUG',
+        #     'propagate': True,
+        # }
+        # 'myproject.custom': {
+        #     'handlers': ['console', 'mail_admins'],
+        #     'level': 'INFO',
+        #     'filters': ['special']
+        # }
+    }
+}
+
+#讓rest api 認證需要登入
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
 
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
@@ -122,6 +212,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -159,9 +250,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#"CSRF Failed: CSRF token missing or incorrect" 處理這個錯誤的問題
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LANGUAGE_CODE = 'zh-Hans'
 
@@ -194,3 +293,6 @@ EMAIL_HOST_PASSWORLD = '2lixgguu'
 EMAIL_POST = 587
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
+
+DATE_FORMAT = '%m/%d/%Y'
+DATETIME_FORMAT = '%m/%d/%Y %I:%M'

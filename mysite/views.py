@@ -11,6 +11,19 @@ from django.contrib.auth import authenticate
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django_tables2 import RequestConfig
+from .tables import ProfitTable
+from .filters import UserFilter
+from mysite.serializers import ProfitSerializer, MusicSerializer, MyoSupplierSerializerEx, MyoSupplierSerializerDT
+from rest_framework import viewsets, status
+from mysite.models import Profit, Music, MyoSupplier, query_myosupplier_by_args
+from rest_framework.permissions import IsAuthenticated
+from datatableview.views import DatatableView
+from django.http import JsonResponse
+from django.template.response import TemplateResponse
+from django.http.response import HttpResponse
+from rest_framework.response import Response
+
 
 
 # Create your views here.
@@ -132,11 +145,70 @@ def leveltwoinfo(request, del_key=None, del_product=None):
             get_products = models.CategoryLevelTwo.objects.get(name=list[0])
             print(get_products.title)
             profit = models.Profit.objects.filter(container__name=list[0]).values('key', 'value').order_by('key')
-            #print(profit)
+            print(profit)
         except:
             message = '資料出現異常'
             print('找不到資料')
     return render(request, 'leveltwoinfo.html', locals())
+    
+
+def leveltwoinfo2(request, del_key=None, del_product=None):
+    products = models.CategoryLevelTwo.objects.all()
+    #product_profit = models.Profit.objects.filter(container__name='JJ001').values('container', 'key', 'value').order_by('key')
+    #product_profit = models.Profit.objects.__dict__
+    
+    print(products)
+    
+    list = []
+    list2 = []
+    list3 = []
+    list4 = []
+    p = {}
+    p2 ={}
+    if products:
+        field_names = [f.name for f in models.CategoryLevelTwo.objects.filter()]
+        print('*********name********')
+        print(field_names)
+        print(products)
+        #e = JJ001 最大上層屬性
+        for e in products:
+            #取出JJ001裡面所有的key 與 value 並且加以排序
+            product_profit = models.Profit.objects.filter(container__name=e.name).values('key', 'value').order_by('key')
+            #把JJ001裡面的key與value與JJ001結合成dict
+            p={'name': e.name}#{'name': 'JJ005'}
+            #list2.append(p)
+            print('***product_profit***')
+            print(product_profit)
+            
+            
+
+            
+            list3.append(p)
+            for e1 in product_profit:
+                p2={'name': e.name}
+                p2.update(e1)
+                print(p2)
+                list.append(p2)
+            print('*****i am list*****')
+            print(list)
+            list3.append(list)
+            list2.append(list)
+            list = []
+
+            '''for e1 in product_profit:
+                p.update(e1)
+                list.append(p) '''
+        print('***list***')
+        print(list)
+        print('***list2***')
+        print(list2)
+        print('***list3***')
+        print(list3)
+
+
+
+    #profit_form = forms.ProfitForm()
+    return render(request, 'leveltwoinfo2.html', locals())
 
     
 def detail(request, id):
@@ -297,5 +369,62 @@ def diarypost(request):
         post_form = forms.DiaryForm()
         messages.add_message(request, messages.INFO, '每個欄位都要填寫喔')
     return render(request, 'diarypost.html', locals())
-        
-        
+
+def people(request):
+    table = ProfitTable(models.Profit.objects.all())
+    RequestConfig(request).configure(table)#django-tabales2
+    form = forms.ProfitForm()
+    #return render(request, 'people.html', {'table': table})
+    return render(request, 'people.html', locals())
+
+def del_profit(request, profit_id):
+    if request == 'POST':
+        try:
+            print(profit_id)
+        except:
+            print('無key值')
+            return redirect('/people')
+    return redirect('/people')
+    
+def search(request):
+    user_list = User.objects.all()
+    user_filter = UserFilter(request.GET, queryset=user_list)
+    return render(request, 'search/user_list.html', {'filter': user_filter})
+    
+class ProfitViewSet(viewsets.ModelViewSet):
+    queryset = Profit.objects.all()
+    serializer_class = ProfitSerializer
+    
+class MusicViewSet(viewsets.ModelViewSet):
+    queryset = Music.objects.all()
+    serializer_class = MusicSerializer
+    permission_classes = (IsAuthenticated,)
+    
+def datatable(request):
+    #html = TemplateResponse(request, 'datatable.html')
+    #return HttpResponse(html.render())
+    if request.method == 'POST':
+        print("收到表單了")
+    else:
+        form = forms.MyoSupplierForm()
+    return render(request, 'datatable.html', locals())
+    
+class MyoSupplierViewSetEx(viewsets.ModelViewSet):
+    queryset = MyoSupplier.objects.all()
+    serializer_class = MyoSupplierSerializerEx
+
+class MyoSupplierViewSetDT(viewsets.ModelViewSet):
+    queryset = MyoSupplier.objects.all()
+    serializer_class = MyoSupplierSerializerDT
+    def list(self, request, **kwargs):
+        try:
+            myo_supplier = query_myosupplier_by_args(**request.query_params)
+            serializer = MyoSupplierSerializerDT(myo_supplier['items'], many=True)
+            result = dict()
+            result['data'] = serializer.data
+            result['draw'] = myo_supplier['draw']
+            result['recordsTotal'] = myo_supplier['total']
+            result['recordsFiltered'] = myo_supplier['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)

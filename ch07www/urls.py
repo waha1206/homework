@@ -15,9 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import include, url
 from mysite import views
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
+from django.urls import reverse
+
+
+
+router = DefaultRouter()
+router.register(r'profit', views.ProfitViewSet)
+router.register(r'music', views.MusicViewSet)
+router.register(r'MyoSupplierDT', views.MyoSupplierViewSetDT)
+router.register(r'MyoSupplierEx', views.MyoSupplierViewSetEx)
 
 
 urlpatterns = [
@@ -38,7 +49,17 @@ urlpatterns = [
     path('accounts/', include('registration.backends.default.urls')),
     path('leveltwoinfo/', views.leveltwoinfo),
     path('leveltwoinfo/<int:del_key>/<str:del_product>', views.leveltwoinfo),
+    path('leveltwoinfo2/', views.leveltwoinfo2),
+    path('leveltwoinfo2/<int:del_key>/<str:del_product>', views.leveltwoinfo2),
+    path('people/', views.people),
+    path('del_profit/<int:profit_id>/', views.del_profit),
+    path('search/', views.search),
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('datatable/', views.datatable),
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEIDA_ROOT)
+
 

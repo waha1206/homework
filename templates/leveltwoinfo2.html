@@ -1,0 +1,63 @@
+<!-- pos2db.html (ch08www object) -->
+{% extends "base.html" %}
+{% block title %}商品利潤總覽{% endblock %}
+{% block content %}
+
+<!-- 點擊BS4垃圾桶符號傳回刪除的程式碼 -->
+<script>
+function go_delete(del_key){
+    var product_name = document.getElementById('product_name').textContent;
+    
+<!-- confirm("視窗內之文字") -->
+
+    if (product_name != "") {
+        var usr = '/' + 'leveltwoinfo' + '/' + del_key + '/' + product_name;
+        window.location = usr;
+        
+    }
+}
+</script>
+
+{% for i in products %}
+{{ i.name }} 
+{% endfor %}
+<br>****************<br>
+{% for l in list2 %}
+
+<table class="table1" >
+<tr>
+{% for j in l %}
+{% if forloop.first %} 
+{{ j.name}}
+{% endif %}
+        
+
+  <th >數量</th>
+  <td >{{ j.key }}</td>
+</tr>
+<tr> 
+  <th >利率</td>
+  <td >{{ j.value }}</td>
+
+          
+          
+        
+
+{% endfor %}
+  </tr>
+</table>
+{% endfor %}
+
+{% endblock %}
+
+.table1{ 
+      width:400px;
+      background:#e2e2e2;
+      border:2px solid #ddd;
+      border-collapse:collapse;
+}
+.table1 tr th{ /*設定表格中的標題欄位樣式*/
+      background:#fff799; 
+      border:1px solid #ccc;
+      border-collapse:collapse;
+} 

@@ -40,6 +40,16 @@ class ProfitAdmin(admin.ModelAdmin):
     list_display = ('key', 'value')
     search_fields=('key',)
     ordering = ('key',)
+    
+class MyoSupplierAdmin(admin.ModelAdmin):
+    list_display=('name', 'company_tax_id', 'tel', 'contact_sales')
+    search_fields=('name',)
+    ordering=('-create_time',) 
+    
+class MaterialLevelThreeAdmin(admin.ModelAdmin):
+    list_display=('create_time', 'name', 'category')
+    search_fields=('name',)
+    ordering=('-create_time',) 
 
 
 admin.site.register(models.Mood)
@@ -50,3 +60,5 @@ admin.site.register(models.CategoryLevelThree, CategoryLevelThreeAdmin)
 admin.site.register(models.CategoryLevelTwo, CategoryLevelTwoAdmin)
 admin.site.register(models.CategoryLevelOne, CategoryLevelOneAdmin)
 admin.site.register(models.Profit, ProfitAdmin)
+admin.site.register(models.MyoSupplier, MyoSupplierAdmin)
+admin.site.register(models.MaterialLevelThree, MaterialLevelThreeAdmin)

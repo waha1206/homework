@@ -1,6 +1,8 @@
 from django import forms
 from mysite import models
 from captcha.fields import CaptchaField
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Row, Column
 
 class ContactForm(forms.Form):
     CITY = [
@@ -22,7 +24,6 @@ class ContactForm(forms.Form):
 class PostForm(forms.ModelForm):
     captcha = CaptchaField() #機器人驗證所需要導入的
     class Meta:
-
         model = models.Post
         fields = ['mood', 'nickname', 'message', 'del_pass', 'enabled']
     def __init__(self, *args, **kwargs):
@@ -94,3 +95,89 @@ class ProfitForm(forms.ModelForm):
         self.fields['container'].label = '商品分類'
         self.fields['key'].label = '請輸入數量'
         self.fields['value'].label = '請輸入利潤'
+        
+class MyoSupplierForm(forms.ModelForm):
+    email = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'EMAIL請注意格式'}))
+    account_contact_email = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'EMAIL請注意格式'}))
+    class Meta:
+        model = models.MyoSupplier
+        fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        super(MyoSupplierForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = '廠商名稱'
+        self.fields['company_tax_id'].label = '統一編號'
+        self.fields['tel'].label = '公司電話'
+        self.fields['fax'].label = '公司傳真'
+        self.fields['postal'].label = '3+2郵遞區號'
+        self.fields['address'].label = '公司地址'
+        self.fields['tax_address'].label = '發票地址'
+        self.fields['email'].label = 'EMAIL'
+        self.fields['website'].label = '廠商網頁'
+        self.fields['contact_sales'].label = '聯絡人'
+        self.fields['contact_sales_phone'].label = '聯絡人電話'
+        self.fields['contact_sales_mob'].label = '聯絡人手機'
+        self.fields['payment'].label = '票期'
+        self.fields['bank'].label = '銀行'
+        self.fields['transit_number'].label = '銀行代碼'
+        self.fields['branch_name'].label = '分行名稱'
+        self.fields['branch_id'].label = '分行代碼'
+        self.fields['bank_account'].label = '匯款帳號'
+        self.fields['account_name'].label = '戶名'
+        self.fields['account_contact_name'].label = '帳戶聯絡人'
+        self.fields['account_contact_tel'].label = '帳戶聯絡人電話'
+        self.fields['account_contact_email'].label = '聯絡人帳戶郵件'
+        self.fields['description'].label = '備註'
+        self.fields['company_tax_id'].required = False
+        self.fields['tel'].required = False
+        self.fields['fax'].required = False
+        self.fields['postal'].required = False
+        self.fields['address'].required = False
+        self.fields['tax_address'].required = False
+        self.fields['email'].required = False
+        self.fields['website'].required = False
+        self.fields['contact_sales'].required = False
+        self.fields['contact_sales_phone'].required = False
+        self.fields['contact_sales_mob'].required = False
+        self.fields['payment'].required = False
+        self.fields['bank'].required = False
+        self.fields['transit_number'].required = False
+        self.fields['branch_name'].required = False
+        self.fields['branch_id'].required = False
+        self.fields['bank_account'].required = False
+        self.fields['account_name'].required = False
+        self.fields['account_contact_name'].required = False
+        self.fields['account_contact_tel'].required = False
+        self.fields['account_contact_email'].required = False
+        self.fields['description'].required = False
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('name', css_class='form-group col-md-3 mb-0'),
+                Column('website', css_class='form-group col-md-3 mb-0'),
+                Column('tel', css_class='form-group col-md-3 mb-0'),
+                Column('fax', css_class='form-group col-md-3 mb-0'),
+                Column('company_tax_id', css_class='form-group col-md-2 mb-0'),
+                Column('email', css_class='form-group col-md-3 mb-0'),
+                Column('postal', css_class='form-group col-md-2 mb-0'),
+                Column('contact_sales', css_class='form-group col-md-2 mb-0'),
+                Column('contact_sales_phone', css_class='form-group col-md-3 mb-0'),
+                Column('contact_sales_mob', css_class='form-group col-md-3 mb-0'),
+                Column('account_contact_email', css_class='form-group col-md-3 mb-0'),
+                Column('bank', css_class='form-group col-md-3 mb-0'),
+                Column('transit_number', css_class='form-group col-md-2 mb-0'),
+                Column('branch_name', css_class='form-group col-md-3 mb-0'),
+                Column('branch_id', css_class='form-group col-md-2 mb-0'),
+                Column('payment', css_class='form-group col-md-2 mb-0'),
+                Column('account_name', css_class='form-group col-md-3 mb-0'),
+                Column('bank_account', css_class='form-group col-md-3 mb-0'),
+                Column('account_contact_name', css_class='form-group col-md-3 mb-0'),
+                Column('account_contact_tel', css_class='form-group col-md-3 mb-0'),
+                Column('address', css_class='form-group col-md-6 mb-0'),
+                Column('tax_address', css_class='form-group col-md-6 mb-0'),
+                
+                css_class='form-row'
+            ),
+            'description',
+        )
+
+
