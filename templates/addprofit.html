@@ -1,0 +1,21 @@
+<!-- mateial.html (ch08www object) -->
+{% extends "base.html" %}
+{% block title %}新增利潤{% endblock %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% csrf_token %}
+{% load static %}
+<html lang="en">
+<body>
+{% for interest_field in form.get_interest_fields %}
+    {{ interest_field }}
+{% endfor %}
+
+</body>
+</html>
+<script type="text/javascript">
+
+
+ </script>
+
+{% endblock %}

@@ -1,0 +1,203 @@
+<!-- mateial.html (ch08www object) -->
+{% extends "base.html" %}
+{% block title %}商品利潤總覽{% endblock %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% csrf_token %}
+{% load static %}
+<html lang="en">
+<body>
+<div class="container">
+    <!-- New  button -->
+    <div class="text-center">
+        <button type="button" data-dismiss="modal" class="btn btn-primary" id="new">新增原物料資料</button>
+    </div>
+<table id="MaterialLevelThree" class="table table-hover" style="width:100%">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>建檔日期</th>
+            <th>原料名稱</th>
+            <th>輔助說明</th>
+            <th>圖片</th>
+            <th>action</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+
+        </tr>
+    </tfoot>
+</table>
+<!--
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+	开始演示模态框
+</button> -->
+    <!-- NEW and EDIT Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog" style="width:1000px;">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal_title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group">
+                            
+                                <div class='panel-body'>
+                                    {% crispy form %}
+                                </div>
+                            <div class='panel-footer'>
+                                <input type="hidden" id="type" name="type" value="">
+                                    <button type="submit" class="btn btn-success btn-block"><span
+                                        class="glyphicon glyphicon-ok"></span> OK
+                                    </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Delete Modal -->
+    <div class="modal fade" id="confirm" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">確定要刪除嗎？</h4>
+                </div>
+                <div class="modal-body">
+                    <button type="button" data-dismiss="modal" class="btn btn-primary" id="delete">Delete</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+
+$(document).ready(function() {
+    var table = $('#MaterialLevelThree').DataTable(
+    {
+    "processing": true,
+    "serverSide": true,
+    "ajax": {
+        "url": "/api/MaterialLevelThreeSerializer/",
+        "type": "GET",
+        //"dataSrc":""
+    },
+    "columnDefs": [
+    { "orderable": false, "targets": 8 }
+        ],
+    "columns": [
+        {"data": "id"},
+        {"data": "create_time"},
+        {"data": "name"},
+        {"data": "title"},
+        {"data": "myo_supplier"},
+        {"data": "image"},
+        {
+            "data": null,
+            "defaultContent": '<button type="button" class="btn btn-info" >修改</button>' + '&nbsp;&nbsp' +
+            '<button type="button" class="btn btn-danger">刪除</button>'
+        }
+    ]
+});
+
+
+var id = 0;
+
+$('#datatables tbody').on('click', 'button', function () {
+    let data = table.row($(this).parents('tr')).data();
+    let class_name = $(this).attr('class');
+    if (class_name == 'btn btn-info') {
+        // EDIT button
+        $('#id_name').val(data['name']);
+        $('#id_company_tax_id').val(data['company_tax_id']);
+        $('#id_tel').val(data['tel']);
+        $('#id_fax').val(data['fax']);
+        $('#id_postal').val(data['postal']);
+        $('#id_address').val(data['address']);
+        $('#id_tax_address').val(data['tax_address']);
+        $('#id_email').val(data['email']);
+        $('#id_website').val(data['website']);
+        $('#id_contact_sales').val(data['contact_sales']);
+        $('#id_contact_sales_phone').val(data['contact_sales_phone']);
+        $('#id_contact_sales_mob').val(data['contact_sales_mob']);
+        $('#id_payment').val(data['payment']);
+        $('#id_bank').val(data['bank']);
+        $('#id_transit_number').val(data['transit_number']);
+        $('#id_branch_name').val(data['branch_name']);
+        $('#id_branch_id').val(data['branch_id']);
+        $('#id_bank_account').val(data['bank_account']);
+        $('#id_account_name').val(data['account_name']);
+        $('#id_account_contact_name').val(data['account_contact_name']);
+        $('#id_account_contact_tel').val(data['account_contact_tel']);
+        $('#id_account_contact_email').val(data['account_contact_email']);
+        $('#id_description').val(data['description']);
+        $('#modal_title').text('編輯資料');
+        $('#type').val('edit');
+        $("#myModal").modal();
+    } else {
+        // DELETE button
+        $('#modal_title').text('DELETE');
+        $("#confirm").modal();
+    }
+    id = data['id'];
+});
+
+$('form').on('submit', function (e) {
+    e.preventDefault();
+    let $this = $(this);
+    let type = $('#type').val();
+    let method = '';
+    
+    let url = '/api/MyoSupplierDT/';
+    if (type == 'new') {
+        // new
+        method = 'POST';
+    } else {
+        // edit
+        url = url + id + '/';
+        method = 'PUT';
+    }
+
+    $.ajax({
+        url: url,
+        method: method,
+        data: $this.serialize()
+    }).done(function (data, textStatus, jqXHR) {
+        location.reload();
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR)
+    });
+});
+
+
+$('#confirm').on('click', '#delete', function (e) {
+    $.ajax({
+        url: '/api/MyoSupplierDT/' + id + '/',
+        method: 'DELETE'
+    }).done(function (data, textStatus, jqXHR) {
+        location.reload();
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR)
+    });
+});
+
+$('#new').on('click', function (e) {
+    $('#song').val('');
+    $('#singer').val('');
+    $('#type').val('new');
+    $('#modal_title').text('新增資料');
+    $("#myModal").modal();
+});
+
+});
+ </script>
+
+{% endblock %}

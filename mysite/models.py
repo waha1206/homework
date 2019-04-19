@@ -226,7 +226,9 @@ class MaterialLevelOne(models.Model):
     name = models.CharField(max_length=10, verbose_name='分類')
     title = models.CharField(max_length=10, verbose_name='中文名稱')
     image       = FilerImageField(related_name='material_one_image', on_delete=models.CASCADE, null=True, verbose_name='圖片')
-    description = models.TextField()    
+    description = models.TextField(blank=True, verbose_name='商品說明')
+    create_time = models.DateTimeField(auto_now_add=True, null=True, verbose_name='建檔日期')
+    last_modify_date = models.DateTimeField(auto_now=True, null=True, verbose_name='資料更新日期')
     def __str__(self):
         return self.name
     class Meta:#plural 使用複數名，才不會多一個s在尾巴
@@ -238,7 +240,9 @@ class MaterialLevelTwo(models.Model):
     title       = models.CharField(max_length=10, verbose_name='中文名稱')
     category    = models.ForeignKey(MaterialLevelOne, on_delete=models.CASCADE)
     image       = FilerImageField(related_name='material_two_image', on_delete=models.CASCADE, null=True, verbose_name='圖片')
-    description = models.TextField()
+    description = models.TextField(blank=True, verbose_name='商品說明')
+    create_time = models.DateTimeField(auto_now_add=True, null=True, verbose_name='建檔日期')
+    last_modify_date = models.DateTimeField(auto_now=True, null=True, verbose_name='資料更新日期')
     def __str__(self):
         return self.name
     class Meta:
@@ -247,8 +251,8 @@ class MaterialLevelTwo(models.Model):
 
 class MaterialLevelThree(models.Model):
     myo_supplier = models.ManyToManyField(MyoSupplier, db_index=True, verbose_name='供應商')
-    name        = models.CharField(max_length=50, verbose_name='商品名稱')
-    title       = models.CharField(max_length=50, blank=True, verbose_name='中文名稱')
+    name        = models.CharField(max_length=50, verbose_name='原料名稱')
+    title       = models.CharField(max_length=50, blank=True, verbose_name='輔助說明')
     category    = models.ForeignKey(MaterialLevelTwo, on_delete=models.CASCADE)
     image       = FilerImageField(related_name='material_three_image', on_delete=models.CASCADE, null=True, verbose_name='圖片')
     description = models.TextField(blank=True, verbose_name='商品說明')
@@ -259,4 +263,21 @@ class MaterialLevelThree(models.Model):
     class Meta:
         verbose_name_plural = u'建立原料第三層分類名稱'
         unique_together = ('name',)
-        
+
+class AddProfit(models.Model):
+    container = models.ForeignKey(CategoryLevelTwo, on_delete=models.CASCADE, db_index=True, verbose_name='商品類別')
+    class Meta:
+        db_table = "addprofit"
+        verbose_name_plural = '利潤分配表'
+        unique_together = ('container', )#聯合約束此為一組的狀態JJ001只會有一個數量20的意思
+    def __str__(self):
+        return str(self.container)
+
+class AddProfitData(models.Model):
+    add_profit = models.ForeignKey(AddProfit, on_delete=models.CASCADE, db_index=True, verbose_name='商品類別')
+    quantity = models.IntegerField(db_index=True, verbose_name='數量')
+    value = models.DecimalField(max_digits=3, decimal_places=2, db_index=True, verbose_name='利率')
+    class Meta:
+        #unique_together = ('quantity','container')#聯合約束此為一組的狀態JJ001只會有一個數量20的意思
+        unique_together = ('quantity', )#一個類別只能有一個數量
+    

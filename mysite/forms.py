@@ -127,28 +127,11 @@ class MyoSupplierForm(forms.ModelForm):
         self.fields['account_contact_tel'].label = '帳戶聯絡人電話'
         self.fields['account_contact_email'].label = '聯絡人帳戶郵件'
         self.fields['description'].label = '備註'
-        self.fields['company_tax_id'].required = False
-        self.fields['tel'].required = False
-        self.fields['fax'].required = False
-        self.fields['postal'].required = False
-        self.fields['address'].required = False
-        self.fields['tax_address'].required = False
-        self.fields['email'].required = False
-        self.fields['website'].required = False
-        self.fields['contact_sales'].required = False
-        self.fields['contact_sales_phone'].required = False
-        self.fields['contact_sales_mob'].required = False
-        self.fields['payment'].required = False
-        self.fields['bank'].required = False
-        self.fields['transit_number'].required = False
-        self.fields['branch_name'].required = False
-        self.fields['branch_id'].required = False
-        self.fields['bank_account'].required = False
-        self.fields['account_name'].required = False
-        self.fields['account_contact_name'].required = False
-        self.fields['account_contact_tel'].required = False
-        self.fields['account_contact_email'].required = False
-        self.fields['description'].required = False
+        #除了name以外的欄位都是非必填 required = False 非必要
+        for key in self.fields:
+            if key != 'name':
+                self.fields[key].required = False
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
@@ -174,10 +157,47 @@ class MyoSupplierForm(forms.ModelForm):
                 Column('account_contact_tel', css_class='form-group col-md-3 mb-0'),
                 Column('address', css_class='form-group col-md-6 mb-0'),
                 Column('tax_address', css_class='form-group col-md-6 mb-0'),
-                
+                css_class='form-row'
+            ),
+            'description',
+        )
+
+class MaterialLevelThreeForm(forms.ModelForm):
+    name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': '名稱不能重複'}))
+    class Meta:
+        model = models.MaterialLevelThree
+        fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        super(MaterialLevelThreeForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = '商品名稱'
+        self.fields['myo_supplier'].label = '供應商'
+        self.fields['title'].label = '輔助說明'
+        self.fields['category'].label = '商品類別'
+        self.fields['image'].label = '商品圖片'
+        self.fields['description'].label = '商品敘述'
+        self.fields['image'].required = False
+        self.fields['description'].required = False
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('name', css_class='form-group col-md-3 mb-0'),
+                Column('myo_supplier', css_class='form-group col-md-3 mb-0'),
+                Column('title', css_class='form-group col-md-3 mb-0'),
+                Column('category', css_class='form-group col-md-3 mb-0'),
+                Column('image', css_class='form-group col-md-2 mb-0'),
+                Column('description', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             'description',
         )
 
 
+class AddProfitForm(forms.ModelForm):
+    class Meta:
+        model = models.Profit
+        fields = ['container', 'key', 'value']
+    def __init__(self, *args, **kwargs):
+        super(ProfitForm, self).__init__(*args, **kwargs)
+        self.fields['container'].label = '商品分類'
+        self.fields['key'].label = '請輸入數量'
+        self.fields['value'].label = '請輸入利潤'

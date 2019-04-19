@@ -15,6 +15,7 @@ from django_tables2 import RequestConfig
 from .tables import ProfitTable
 from .filters import UserFilter
 from mysite.serializers import ProfitSerializer, MusicSerializer, MyoSupplierSerializerEx, MyoSupplierSerializerDT
+from mysite.serializers import MaterialLevelOne, MaterialLevelTwo, MaterialLevelThree
 from rest_framework import viewsets, status
 from mysite.models import Profit, Music, MyoSupplier, query_myosupplier_by_args
 from rest_framework.permissions import IsAuthenticated
@@ -428,3 +429,12 @@ class MyoSupplierViewSetDT(viewsets.ModelViewSet):
             return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+def material(request):
+    form = forms.MaterialLevelThreeForm()
+    return render(request, 'material.html', locals())
+
+def addprofit(self):
+    for field_name in self.fields:
+        if field_name.startswith('interest'):
+            yield self[field_mame]

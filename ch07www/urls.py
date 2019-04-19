@@ -57,7 +57,8 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('datatable/', views.datatable),
-    
+    path('material/', views.material),
+    path('addprofit/', views.addprofit),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEIDA_ROOT)

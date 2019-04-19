@@ -46,6 +46,16 @@ class MyoSupplierAdmin(admin.ModelAdmin):
     search_fields=('name',)
     ordering=('-create_time',) 
     
+class MaterialLevelOneAdmin(admin.ModelAdmin):
+    list_display=('create_time', 'name')
+    search_fields=('name',)
+    ordering=('-create_time',) 
+    
+class MaterialLevelTwoAdmin(admin.ModelAdmin):
+    list_display=('create_time', 'name', 'category')
+    search_fields=('name',)
+    ordering=('-create_time',) 
+
 class MaterialLevelThreeAdmin(admin.ModelAdmin):
     list_display=('create_time', 'name', 'category')
     search_fields=('name',)
@@ -61,4 +71,6 @@ admin.site.register(models.CategoryLevelTwo, CategoryLevelTwoAdmin)
 admin.site.register(models.CategoryLevelOne, CategoryLevelOneAdmin)
 admin.site.register(models.Profit, ProfitAdmin)
 admin.site.register(models.MyoSupplier, MyoSupplierAdmin)
+admin.site.register(models.MaterialLevelOne, MaterialLevelOneAdmin)
+admin.site.register(models.MaterialLevelTwo, MaterialLevelTwoAdmin)
 admin.site.register(models.MaterialLevelThree, MaterialLevelThreeAdmin)
