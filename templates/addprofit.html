@@ -6,9 +6,16 @@
 {% csrf_token %}
 {% load static %}
 <html lang="en">
+
 <body>
-{% for interest_field in form.get_interest_fields %}
-    {{ interest_field }}
+
+{% for container_field in form.get_container_fields %}
+    {{ container_field }}
+    {% if forloop.last %}
+    <div class="input-group-append">
+        <button class="btn btn-success add-form-row">+</button>
+    </div>
+    {% endif %}
 {% endfor %}
 
 </body>

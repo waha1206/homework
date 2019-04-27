@@ -191,13 +191,21 @@ class MaterialLevelThreeForm(forms.ModelForm):
             'description',
         )
 
-
 class AddProfitForm(forms.ModelForm):
     class Meta:
-        model = models.Profit
-        fields = ['container', 'key', 'value']
+        model = models.AddProfitData
+        fields = ['container', 'quantity', 'value']
     def __init__(self, *args, **kwargs):
-        super(ProfitForm, self).__init__(*args, **kwargs)
+        super(AddProfitForm, self).__init__(*args, **kwargs)
         self.fields['container'].label = '商品分類'
-        self.fields['key'].label = '請輸入數量'
+        self.fields['quantity'].label = '請輸入數量'
         self.fields['value'].label = '請輸入利潤'
+        #profit = AddProfitData.objects.filter(add_profit=self.add_profit)
+    def get_container_fields(self):
+        for field_name in self.fields:
+            if field_name.startswith('container'):
+                yield self[field_name]
+            if field_name.startswith('quantity'):
+                yield self[field_name]
+            if field_name.startswith('value'):
+                yield self[field_name]

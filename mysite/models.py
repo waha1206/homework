@@ -264,20 +264,23 @@ class MaterialLevelThree(models.Model):
         verbose_name_plural = u'建立原料第三層分類名稱'
         unique_together = ('name',)
 
-class AddProfit(models.Model):
-    container = models.ForeignKey(CategoryLevelTwo, on_delete=models.CASCADE, db_index=True, verbose_name='商品類別')
-    class Meta:
-        db_table = "addprofit"
-        verbose_name_plural = '利潤分配表'
-        unique_together = ('container', )#聯合約束此為一組的狀態JJ001只會有一個數量20的意思
-    def __str__(self):
-        return str(self.container)
+#class AddProfit(models.Model):
+#    container = models.ForeignKey(CategoryLevelTwo, on_delete=models.CASCADE, db_index=True, verbose_name='商品類別')
+#    class Meta:
+#        db_table = "addprofit"
+#        verbose_name_plural = '利潤分配表'
+#        unique_together = ('container', )#聯合約束此為一組的狀態JJ001只會有一個數量20的意思
+#    def __str__(self):
+#        return str(self.container)
 
 class AddProfitData(models.Model):
-    add_profit = models.ForeignKey(AddProfit, on_delete=models.CASCADE, db_index=True, verbose_name='商品類別')
+    container = models.ForeignKey(CategoryLevelTwo, on_delete=models.CASCADE, db_index=True, verbose_name='商品類別')
     quantity = models.IntegerField(db_index=True, verbose_name='數量')
     value = models.DecimalField(max_digits=3, decimal_places=2, db_index=True, verbose_name='利率')
     class Meta:
         #unique_together = ('quantity','container')#聯合約束此為一組的狀態JJ001只會有一個數量20的意思
         unique_together = ('quantity', )#一個類別只能有一個數量
+    def __str__(self):
+        return str(self.container)
+
     

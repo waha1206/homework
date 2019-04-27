@@ -434,7 +434,8 @@ def material(request):
     form = forms.MaterialLevelThreeForm()
     return render(request, 'material.html', locals())
 
-def addprofit(self):
-    for field_name in self.fields:
-        if field_name.startswith('interest'):
-            yield self[field_mame]
+def addprofit(request):
+    form = forms.AddProfitForm()
+    print(form)
+    return render(request, 'addprofit.html', locals())
+
