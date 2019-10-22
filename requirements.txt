@@ -11,7 +11,7 @@ django-registration-redux==2.5
 django-simple-captcha==0.5.10
 easy-thumbnails==2.6
 idna==2.8
-Pillow==5.4.1
+Pillow==6.2.0
 pytz==2018.9
 requests==2.21.0
 six==1.12.0
