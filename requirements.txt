@@ -1,6 +1,6 @@
 certifi==2018.11.29
 chardet==3.0.4
-Django==2.1.7
+Django==2.2.24
 django-filer==1.4.4
 django-js-asset==1.2.2
 django-mailgun==0.9.1
